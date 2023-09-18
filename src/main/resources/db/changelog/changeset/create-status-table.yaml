@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: creation-and-filling-status-table
+      author: Yury
+      changes:
+      - createTable:
+          tableName: status
+          columns:
+          - column:
+              name: id
+              type: integer
+              constraints:
+                primaryKey: true
+                nullable: false
+          - column:
+              name: name
+              type: varchar(200)
+              constraints:
+                nullable: false
+
+      - insert:
+          tableName: status
+          columns:
+          - column:
+              name: id
+              value: 1
+          - column:
+              name: name
+              value: Игра не завершена.
+      - insert:
+            tableName: status
+            columns:
+                - column:
+                      name: id
+                      value: 2
+                - column:
+                      name: name
+                      value: Победил игрок!
+      - insert:
+            tableName: status
+            columns:
+                - column:
+                      name: id
+                      value: 3
+                - column:
+                      name: name
+                      value: Победила машина!
+      - insert:
+            tableName: status
+            columns:
+                - column:
+                      name: id
+                      value: 4
+                - column:
+                      name: name
+                      value: Ничья!
+
+
+

@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: creation-user-table
+      author: Yury
+      changes:
+        - createTable:
+            tableName: user
+            remarks: Пользователи
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(25)
+

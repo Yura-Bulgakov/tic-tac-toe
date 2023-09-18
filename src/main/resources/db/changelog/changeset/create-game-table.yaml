@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: creation-game-table
+      author: Yury
+      changes:
+        - createTable:
+            tableName: game
+            remarks: Игры
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: goes_first
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modified_date
+                  type: date
+  - addForeignKeyConstraint:
+      baseTableName: game
+      baseColumnNames: user_id
+      referencedTableName: user
+      referencedColumnNames: id
+      constraintName: game_user_fk

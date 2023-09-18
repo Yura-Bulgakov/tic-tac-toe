@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: creation-move-table
+      author: Yury
+      changes:
+        - createTable:
+            tableName: move
+            remarks: Ходы_партии
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: game_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: turn
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: actor
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: row
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: col
+                  type: integer
+                  constraints:
+                    nullable: false
+  - addForeignKeyConstraint:
+      baseTableName: move
+      baseColumnNames: game_id
+      referencedTableName: game
+      referencedColumnNames: id
+      constraintName: move_game_fk
+

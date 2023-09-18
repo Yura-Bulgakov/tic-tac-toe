@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /demo
+jwt:
+  secret: 1230489dg9f0fsdf23423sdfgsr23
+  lifetime: 30m
+spring:
+  liquibase:
+    drop-first: true
+    enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/tic-tac-toe
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true

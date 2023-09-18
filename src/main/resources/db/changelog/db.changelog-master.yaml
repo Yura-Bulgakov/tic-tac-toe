@@ -1,0 +1,9 @@
+databaseChangelog:
+  - include:
+      file: db/changelog/changeset/create-user-table.yaml
+  - include:
+      file: db/changelog/changeset/create-status-table.yaml
+  - include:
+      file: db/changelog/changeset/create-game-table.yaml
+  - include:
+      file: db/changelog/changeset/create-move-table.yaml
