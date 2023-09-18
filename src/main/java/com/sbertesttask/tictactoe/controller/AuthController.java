@@ -26,6 +26,7 @@ public class AuthController {
     private final JwtTokenUtils jwtTokenUtils;
     private final AuthenticationManager authenticationManager;
 
+    @PostMapping
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequestDTO authRequest){
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -39,13 +40,11 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(RegistrationUserDTO registrationUserDTO){
+    public ResponseEntity<?> createUser(@RequestBody RegistrationUserDTO registrationUserDTO){
         if (userService.doesUserExist(registrationUserDTO.getLogin())){
             return ResponseEntity.badRequest().body("Логин уже занят");
-        } else if (!userService.registerUser(registrationUserDTO)) {
-            return ResponseEntity.badRequest().body("Неверный пароль");
         }
-        userService.registerUser(registrationUserDTO);
+        userService.registerUser(registrationUserDTO.getLogin(),registrationUserDTO.getPassword(),registrationUserDTO.getConfirmPassword());
         return ResponseEntity.ok().body("Пользователь успешно создан");
 
     }

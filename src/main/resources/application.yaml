@@ -2,13 +2,25 @@ server:
   port: 8080
   servlet:
     context-path: /demo
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 jwt:
   secret: 1230489dg9f0fsdf23423sdfgsr23
   lifetime: 30m
 spring:
+  data:
+    jpa:
+      repositories:
+        enabled: true
+        base-package: com.sbertesttask.ticktacktoe.repository
   liquibase:
     drop-first: true
     enabled: true
+    change-log: classpath:db/changelog/changelog-master.yaml
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/tic-tac-toe

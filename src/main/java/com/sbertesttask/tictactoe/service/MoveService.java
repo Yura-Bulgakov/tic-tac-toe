@@ -2,7 +2,7 @@ package com.sbertesttask.tictactoe.service;
 
 import com.sbertesttask.tictactoe.entity.Game;
 import com.sbertesttask.tictactoe.entity.Move;
-import com.sbertesttask.tictactoe.entity.repository.MoveRepository;
+import com.sbertesttask.tictactoe.repository.MoveRepository;
 import com.sbertesttask.tictactoe.game_utils.Pos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class MoveService {
 
     private final MoveRepository moveRepository;
-    private final GameService gameService;
+
 
     public void createNewMove(Move move){
         moveRepository.save(move);
@@ -72,9 +72,8 @@ public class MoveService {
 
     }
 
-    public void makeMove(Long gameId,boolean actor, Pos pos){
-        Optional<Move> optionalMove = findTopMoveByGameIdOrderByTurnDesc(gameId);
-        Game game = gameService.finById(gameId).get();
+    public void makeMove(Game game,boolean actor, Pos pos){
+        Optional<Move> optionalMove = findTopMoveByGameIdOrderByTurnDesc(game.getId());
         int maxTurn;
         if (optionalMove.isPresent()){
             Move maxTurnMove = optionalMove.get();

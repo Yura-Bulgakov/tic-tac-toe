@@ -4,19 +4,19 @@ databaseChangeLog:
       author: Yury
       changes:
         - createTable:
-            tableName: game
+            tableName: games
             remarks: Игры
             columns:
               - column:
                   name: id
-                  type: integer
+                  type: int
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: user_id
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -26,15 +26,15 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: status
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: modified_date
                   type: date
-  - addForeignKeyConstraint:
-      baseTableName: game
-      baseColumnNames: user_id
-      referencedTableName: user
-      referencedColumnNames: id
-      constraintName: game_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: games
+            baseColumnNames: user_id
+            referencedTableName: "users"
+            referencedColumnNames: id
+            constraintName: game_user_fk

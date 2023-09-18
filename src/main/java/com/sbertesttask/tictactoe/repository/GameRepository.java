@@ -1,4 +1,4 @@
-package com.sbertesttask.tictactoe.entity.repository;
+package com.sbertesttask.tictactoe.repository;
 
 import com.sbertesttask.tictactoe.entity.Game;
 import org.springframework.data.jpa.repository.JpaRepository;

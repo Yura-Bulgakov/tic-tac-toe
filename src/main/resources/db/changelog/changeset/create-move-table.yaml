@@ -4,24 +4,24 @@ databaseChangeLog:
       author: Yury
       changes:
         - createTable:
-            tableName: move
+            tableName: moves
             remarks: Ходы_партии
             columns:
               - column:
                   name: id
-                  type: integer
+                  type: int
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: game_id
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: turn
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -31,18 +31,18 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: row
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: col
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
-  - addForeignKeyConstraint:
-      baseTableName: move
-      baseColumnNames: game_id
-      referencedTableName: game
-      referencedColumnNames: id
-      constraintName: move_game_fk
+        - addForeignKeyConstraint:
+            baseTableName: moves
+            baseColumnNames: game_id
+            referencedTableName: games
+            referencedColumnNames: id
+            constraintName: move_game_fk
 

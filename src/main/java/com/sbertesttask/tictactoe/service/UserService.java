@@ -1,8 +1,7 @@
 package com.sbertesttask.tictactoe.service;
 
-import com.sbertesttask.tictactoe.dtos.RegistrationUserDTO;
 import com.sbertesttask.tictactoe.entity.User;
-import com.sbertesttask.tictactoe.entity.repository.UserRepository;
+import com.sbertesttask.tictactoe.repository.UserRepository;
 import com.sbertesttask.tictactoe.security.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -32,13 +31,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public boolean registerUser(RegistrationUserDTO createUserRequest){
-        if(!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
+    public boolean registerUser(String username, String password, String confirmPassword){
+        if(!password.equals(confirmPassword)){
             return false;
         }
         User newUser = new User();
-        newUser.setUsername(createUserRequest.getLogin());
-        String encodedPassword = passwordEncoder.encode(createUserRequest.getPassword());
+        newUser.setUsername(username);
+        String encodedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encodedPassword);
         createNewUser(newUser);
         return true;

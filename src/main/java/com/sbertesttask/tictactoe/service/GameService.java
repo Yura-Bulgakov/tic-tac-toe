@@ -1,17 +1,15 @@
 package com.sbertesttask.tictactoe.service;
 
-import com.sbertesttask.tictactoe.dtos.CreateGameDTO;
 import com.sbertesttask.tictactoe.dtos.GameBoardDTO;
 import com.sbertesttask.tictactoe.entity.Game;
 import com.sbertesttask.tictactoe.entity.StatusCode;
 import com.sbertesttask.tictactoe.entity.User;
-import com.sbertesttask.tictactoe.entity.repository.GameRepository;
+import com.sbertesttask.tictactoe.repository.GameRepository;
 import com.sbertesttask.tictactoe.game_utils.*;
 import com.sbertesttask.tictactoe.security.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +30,12 @@ public class GameService {
     }
     public void createNewGame(Game game){ gameRepository.save(game);}
 
-    public Long createGame(CreateGameDTO createRequest, HttpServletRequest request){
-        User user = userService.getUserFromJwt(request);
+    public Long createGame(boolean actor, String username){
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("Пользователя нет в базе!"));
         Game newGame = new Game();
         newGame.setStatus(StatusCode.IN_PROGRESS.getCode());
         newGame.setUser(user);
-        newGame.setGoesFirst(createRequest.isActor());
+        newGame.setGoesFirst(actor);
         newGame.setModifiedDate(new Date());
         createNewGame(newGame);
         if (!newGame.isGoesFirst()){
@@ -48,7 +46,7 @@ public class GameService {
         return newGame.getId();
     }
 
-    public GameBoardDTO getGameBoard(Long gameID, HttpServletRequest request){
+    public GameBoardDTO getGameBoard(Long gameID){
         Game game = gameRepository.findById(gameID).orElseThrow(() -> new RuntimeException("Данная игра отсутствует в БД!"));
         Seed playerSeed;
         if (game.isGoesFirst()){
@@ -104,13 +102,15 @@ public class GameService {
         board.setSeedAtPosition(finePos, machineSeed);
         if (game.getStatusAsEnum() == StatusCode.IN_PROGRESS){
             GameStatus gameStatus = board.getGameStatus();
-            if (gameStatus.getWinnerSeed().equals(playerSeed)){
+            if (!gameStatus.isOver()){
+
+            }else if (gameStatus.getWinnerSeed().equals(playerSeed)){
                 game.setStatus(StatusCode.PLAYER_WIN.getCode());
             }else if (gameStatus.getWinnerSeed().equals(machineSeed)){
                 game.setStatus(StatusCode.MACHINE_WIN.getCode());
             }else game.setStatus(StatusCode.NOBODY_WIN.getCode());
         }
-        moveService.makeMove(game.getId(),false, finePos);
+        moveService.makeMove(game,false, finePos);
         game.setModifiedDate(new Date());
         createNewGame(game);
     }
@@ -143,13 +143,15 @@ public class GameService {
         board.setSeedAtPosition(pos, playerSeed);
         if (game.getStatusAsEnum() == StatusCode.IN_PROGRESS){
             GameStatus gameStatus = board.getGameStatus();
-            if (gameStatus.getWinnerSeed().equals(playerSeed)){
+            if (!gameStatus.isOver()){
+
+            }else if (gameStatus.getWinnerSeed().equals(playerSeed)){
                 game.setStatus(StatusCode.PLAYER_WIN.getCode());
             }else if (gameStatus.getWinnerSeed().equals(machineSeed)){
                 game.setStatus(StatusCode.MACHINE_WIN.getCode());
             }else game.setStatus(StatusCode.NOBODY_WIN.getCode());
         }
-        moveService.makeMove(game.getId(),true, pos);
+        moveService.makeMove(game,true, pos);
         playerPosList.add(pos);
         makeMachineMoveByAI(machineSeed,board, game, playerPosList, machinePosList);
         return true;
