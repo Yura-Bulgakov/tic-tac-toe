@@ -57,19 +57,25 @@ public class MoveService {
     }
 
     public boolean undoLastTurn(Long gameId){
-        List<Move> moves = findMovesByGameIdAndActorOrderByTurn(gameId, true);
-        if(moves == null || moves.isEmpty()){
+        List<Move> playerMoves = findMovesByGameIdAndActorOrderByTurn(gameId, true);
+        List<Move> machineMoves = findMovesByGameIdAndActorOrderByTurn(gameId, false);
+        if(playerMoves.isEmpty()){
             return false;
         }
-        int size = moves.size();
-        Move lastMove = moves.get(size-1);
+        int sizePlayerMoves = playerMoves.size();
+        int sizeMachineMoves = machineMoves.size();
+        Move lastMove = playerMoves.get(sizePlayerMoves -1);
         int lastPlayerTurn = lastMove.getTurn();
         deleteMoveById(lastMove.getId());
-        if (existByIdAndTurn(gameId,lastPlayerTurn+1)){
+        if (sizePlayerMoves > sizeMachineMoves){
+            return true;
+        } else if (findByIdAndTurn(gameId,lastPlayerTurn+1).isPresent()){
+            deleteMoveById(findByIdAndTurn(gameId, lastPlayerTurn+1).get().getId());
+        } else if (findByIdAndTurn(gameId,lastPlayerTurn-1).isPresent() &&
+                findByIdAndTurn(gameId,lastPlayerTurn-1).get().getTurn() > 1){
             deleteMoveById(findByIdAndTurn(gameId, lastPlayerTurn+1).get().getId());
         }
         return true;
-
     }
 
     public void makeMove(Game game,boolean actor, Pos pos){

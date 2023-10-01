@@ -31,7 +31,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: modified_date
-                  type: date
+                  type: timestamp
         - addForeignKeyConstraint:
             baseTableName: games
             baseColumnNames: user_id

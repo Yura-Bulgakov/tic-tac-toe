@@ -52,7 +52,7 @@ public class Board {
         }
     }
 
-    public GameStatus getGameStatus() {
+    public BoardStatus getBoardStatus() {
         final int[] rowScores = new int[BOARD_SIZE];
         final int[] colScores = new int[BOARD_SIZE];
         final int[] diag1Score = new int[1];
@@ -74,12 +74,12 @@ public class Board {
             final int winPoints = BOARD_SIZE * getDelta(seed);
             for (int i = 0; i < BOARD_SIZE; i++) {
                 if (rowScores[i] == winPoints || colScores[i] == winPoints)
-                    return new GameStatus(true, seed);
+                    return new BoardStatus(true, seed);
             }
             if (diag1Score[0] == winPoints || diag2Score[0] == winPoints)
-                return new GameStatus(true, seed);
+                return new BoardStatus(true, seed);
         }
-        return new GameStatus(getFreePositions().isEmpty(), Seed.Empty);
+        return new BoardStatus(getFreePositions().isEmpty(), Seed.Empty);
     }
 
     private int getDelta(Seed seed) {

@@ -48,7 +48,7 @@ public class GameHelper {
             throw new IllegalArgumentException("seed не должен быть Empty");
         int bestScore = (seed == ourSeed) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         Pos bestPos = null;
-        if (depth == 0 || board.getGameStatus().isOver()) {
+        if (depth == 0 || board.getBoardStatus().isOver()) {
             bestScore = evaluate(board);
         } else {
             Board clonedBoard = board.createFullCopy();
@@ -74,7 +74,7 @@ public class GameHelper {
     }
 
     private int evaluateSimple(Board board) {
-        GameStatus status = board.getGameStatus();
+        BoardStatus status = board.getBoardStatus();
         if (status.isOver()) {
             return switch (status.getWinnerSeed()) {
                 case Empty -> 0;

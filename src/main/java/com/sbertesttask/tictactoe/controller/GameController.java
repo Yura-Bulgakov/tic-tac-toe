@@ -42,7 +42,7 @@ public class GameController {
     @PostMapping("/{game_id}")
     public ResponseEntity<?> makeMoveGame(@PathVariable("game_id") Long gameId,
                                                      @RequestBody Pos pos){
-        boolean validMove = gameService.makePlayerMove(gameId, pos);
+        boolean validMove = gameService.makeMove(gameId, pos);
         if (validMove) {
             return ResponseEntity.ok(gameService.getGameBoard(gameId));
         } else {

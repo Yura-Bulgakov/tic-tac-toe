@@ -1,10 +1,10 @@
 package com.sbertesttask.tictactoe.game_utils;
 
-public class GameStatus {
+public class BoardStatus {
     private final boolean isOver;
     private final Seed winner;
 
-    public GameStatus(boolean isFinished, Seed winnerSeed) {
+    public BoardStatus(boolean isFinished, Seed winnerSeed) {
         this.isOver = isFinished;
         this.winner = winnerSeed;
     }
