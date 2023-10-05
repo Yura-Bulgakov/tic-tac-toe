@@ -4,8 +4,7 @@ import com.sbertesttask.tictactoe.dtos.CreateGameDTO;
 import com.sbertesttask.tictactoe.dtos.GameBoardDTO;
 import com.sbertesttask.tictactoe.game_utils.Pos;
 import com.sbertesttask.tictactoe.security.JwtTokenUtils;
-import com.sbertesttask.tictactoe.service.GameService;
-import com.sbertesttask.tictactoe.service.MoveService;
+import com.sbertesttask.tictactoe.service.GameServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,7 @@ import java.net.URI;
 public class GameController {
 
 
-    private final GameService gameService;
-    private final MoveService moveService;
+    private final GameServiceInterface gameService;
     private final JwtTokenUtils jwtTokenUtils;
 
     @PostMapping
@@ -51,8 +49,8 @@ public class GameController {
     }
 
     @DeleteMapping("/{game_id}/last_turn")
-    public ResponseEntity<?> makeMoveGame(@PathVariable("game_id") Long gameId){
-        boolean validUnMove = moveService.undoLastTurn(gameId);
+    public ResponseEntity<?> undoMoveGame(@PathVariable("game_id") Long gameId){
+        boolean validUnMove = gameService.undoLastMove(gameId);
 
         if (validUnMove) {
             return ResponseEntity.ok(gameService.getGameBoard(gameId));

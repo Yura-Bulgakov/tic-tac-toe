@@ -5,6 +5,7 @@ import com.sbertesttask.tictactoe.dtos.RegistrationUserDTO;
 import com.sbertesttask.tictactoe.dtos.JwtRequestDTO;
 import com.sbertesttask.tictactoe.exceptions.AppError;
 import com.sbertesttask.tictactoe.security.JwtTokenUtils;
+import com.sbertesttask.tictactoe.service.AuthInterface;
 import com.sbertesttask.tictactoe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
-    private final JwtTokenUtils jwtTokenUtils;
+    private final AuthInterface userService;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping
@@ -33,8 +32,7 @@ public class AuthController {
         } catch (BadCredentialsException e){
             return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Неправильны логины или пароль"), HttpStatus.BAD_REQUEST);
         }
-        UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
-        String token = jwtTokenUtils.generateToken(userDetails);
+        String token = userService.authUser(authRequest.getUsername());
         return ResponseEntity.ok(new JwtResponseDTO(token));
     }
 

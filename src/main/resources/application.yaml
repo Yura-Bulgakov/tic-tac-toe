@@ -22,10 +22,10 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/changelog-master.yaml
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/tic-tac-toe
-    username: postgres
-    password: postgres
+    driver-class-name: ${DATABASE_DRIVER}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none

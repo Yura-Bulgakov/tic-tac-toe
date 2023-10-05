@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MoveService {
+public class MoveService implements MoveServiceInterface{
 
     private final MoveRepository moveRepository;
 
@@ -23,6 +23,10 @@ public class MoveService {
 
     public void deleteMoveById(Long id) {
         moveRepository.deleteById(id);
+    }
+
+    public void deleteMoveByGameId(Long id){
+        moveRepository.deleteByGameId(id);
     }
 
     public boolean existsMoveInGame(Long gameId, int row, int col){
@@ -93,6 +97,5 @@ public class MoveService {
         move.setTurn(++maxTurn);
         createNewMove(move);
     }
-
 
 }

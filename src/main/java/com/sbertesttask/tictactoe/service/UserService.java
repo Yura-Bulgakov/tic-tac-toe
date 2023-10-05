@@ -4,10 +4,8 @@ import com.sbertesttask.tictactoe.entity.User;
 import com.sbertesttask.tictactoe.repository.UserRepository;
 import com.sbertesttask.tictactoe.security.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService implements AuthInterface {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -43,13 +41,19 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    @Override
+    public String authUser(String username) {
+        UserDetails userDetails = loadUserByUsername(username);
+        return jwtTokenUtils.generateToken(userDetails);
+    }
+
     public User getUserFromJwt(HttpServletRequest request){
         String username = jwtTokenUtils.getUsernameFromRequest(request);
         Optional<User> opUser = findByUsername(username);
         return opUser.orElseThrow(() -> new RuntimeException("Пользователь отсутствует"));
     }
 
-    public void createNewUser(User user){
+    private void createNewUser(User user){
         userRepository.save(user);
     }
 

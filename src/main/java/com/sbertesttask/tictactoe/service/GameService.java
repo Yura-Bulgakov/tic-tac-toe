@@ -17,19 +17,23 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class GameService {
+public class GameService implements GameServiceInterface{
 
     private final GameRepository gameRepository;
     private final UserService userService;
-    private final MoveService moveService;
+    private final MoveServiceInterface moveService;
     private final GameHelper gameHelper;
-    private final JwtTokenUtils jwtTokenUtils;
-    private Board board;
+
 
     public Optional<Game> findById(Long id){
         return gameRepository.findById(id);
     }
     public void saveGame(Game game){ gameRepository.save(game);}
+    public void deleteGame(Long id){ gameRepository.deleteById(id);}
+
+    public List<Game> findByModifiedDateBefore(Date date){
+        return gameRepository.findByModifiedDateBefore(date);
+    }
 
     public Long createGame(boolean actor, String username){
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("Пользователя нет в базе!"));
@@ -56,7 +60,17 @@ public class GameService {
                 moveService.movesToPosList(moveService.findMovesByGameIdAndActorOrderByTurn(gameID, false)));
     }
 
-    public GameBoardDTO returnGameBoard(Game game, List<Pos> playerPos, List<Pos> machinePos){
+    public boolean undoLastMove(Long gameId){
+        if (findById(gameId).isEmpty() || !moveService.undoLastTurn(gameId)){
+            return false;
+        }
+        Game game = findById(gameId).get();
+        game.setStatus(StatusCode.IN_PROGRESS.getCode());
+        saveGame(game);
+        return true;
+    }
+
+    private GameBoardDTO returnGameBoard(Game game, List<Pos> playerPos, List<Pos> machinePos){
         Seed playerSeed = loadPlayerSeedByGame(game);
         Seed machineSeed = loadMachineSeedByGame(game);
         GameBoardDTO returnBoard = new GameBoardDTO();
@@ -86,15 +100,13 @@ public class GameService {
         Game game = findById(gameId).orElseThrow(() -> new RuntimeException("Игра, по которой идет попытка действия, не найдена"));
         if (pos.getRow() >= Board.BOARD_SIZE ||
                 pos.getCol() >= Board.BOARD_SIZE ||
-                moveService.existsMoveInGame(gameId, pos.getRow(), pos.getCol())){
+                moveService.existsMoveInGame(gameId, pos.getRow(), pos.getCol()) ||
+                !game.getStatusAsEnum().equals(StatusCode.IN_PROGRESS)){
             return false;
         }
         Seed playerSeed = loadPlayerSeedByGame(game);
         Seed machineSeed = loadMachineSeedByGame(game);
         Board board = loadBoardByGame(game, playerSeed, machineSeed);
-        if (board.getBoardStatus().isOver()){
-            return false;
-        }
         makePlayerMove(game, pos, board, playerSeed, machineSeed);
         makeMachineMoveByAI(game, board, playerSeed, machineSeed);
         setGameStatus(game, board, playerSeed, machineSeed);
@@ -102,7 +114,7 @@ public class GameService {
         return true;
     }
 
-    public void makeMachineMoveByAI(Game game, Board board, Seed playerSeed, Seed machineSeed){
+    private void makeMachineMoveByAI(Game game, Board board, Seed playerSeed, Seed machineSeed){
         Set<Pos> availPos = board.getFreePositions();
         if (availPos.isEmpty()){
             return;
@@ -118,7 +130,7 @@ public class GameService {
         game.setModifiedDate(new Date());
     }
 
-    public void makePlayerMove(Game game, Pos pos, Board board, Seed playerSeed, Seed machineSeed){
+    private void makePlayerMove(Game game, Pos pos, Board board, Seed playerSeed, Seed machineSeed){
         board.setSeedAtPosition(pos, playerSeed);
         game.setModifiedDate(new Date());
         moveService.makeMove(game,true, pos);

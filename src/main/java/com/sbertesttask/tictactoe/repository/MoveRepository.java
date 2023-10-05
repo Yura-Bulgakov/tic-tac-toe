@@ -16,6 +16,7 @@ public interface MoveRepository extends JpaRepository<Move, Long> {
     Optional<Move> findTopByGameIdOrderByTurnDesc(Long gameId);
     Optional<Move> findByGameIdAndTurn(Long gameId, int turn);
     void deleteById(Long id);
+    void deleteByGameId(Long gameID);
 
     boolean existsByGameIdAndRowAndCol(Long gameId, int row, int col);
 
